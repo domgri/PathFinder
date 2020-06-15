@@ -22,11 +22,11 @@ public class DFS {
 
         // Perform a DFS from 'start' node
         // Explanation: ParentTracker[child's index] = parent node
-        LinkedList<Node> parentTracker = solveDfs(start, end, (LinkedList<Node>)table.getAdjacencyList());
+        LinkedList<Node> parentTracker = solveDfs(start, end, (LinkedList<Node>)table.getListOfNodes());
 
 
         // Return reconstructed (reversed) path from s -> e
-        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getAdjacencyList());
+        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getListOfNodes());
     }
 
     public LinkedList<Node> solveDfs(Node start, Node end, LinkedList<Node> graph) {

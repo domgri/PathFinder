@@ -30,11 +30,11 @@ public class BFS {
 
         // Perform a BFS from 'start' node
         // Explanation: ParentTracker[child's index] = parent node
-        LinkedList<Node> parentTracker = solveBfs(start, end, (LinkedList<Node>)table.getAdjacencyList());
+        LinkedList<Node> parentTracker = solveBfs(start, end, (LinkedList<Node>)table.getListOfNodes());
 
 
         // Return reconstructed (reversed) path from s -> e
-        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getAdjacencyList());
+        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getListOfNodes());
     }
 
     /**

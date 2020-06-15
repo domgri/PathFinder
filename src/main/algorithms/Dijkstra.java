@@ -39,7 +39,7 @@ public class Dijkstra {
     // TODO: think about saving table and graph. Duplicate a little (also AStar)
     public Dijkstra(Table table) {
         this.table = table;
-        graph = table.getGraph();
+        graph = table.getAdjacencyList();
         NUMBER_OF_NODES = table.getNumberOfNodes();
         edgeCount = table.getEdgeCount();
     }
@@ -95,7 +95,7 @@ public class Dijkstra {
                 }
 
                 System.out.println("edge:" + prev[edge.getTo()] + " edegTo:" +edge.getTo());
-                table.getAdjacencyList().get(nodeId).setStatus(Status.VISITED);
+                table.getListOfNodes().get(nodeId).setStatus(Status.VISITED);
                 System.out.println(table.displayStatus());
 
 
@@ -123,7 +123,7 @@ public class Dijkstra {
             // shortest path by routing through any other nodes since Dijkstra's is
             //greedy and there are no negative edge weights.
             if (nodeId == end) {
-                table.getAdjacencyList().get(nodeId).setStatus(Status.FINISH);
+                table.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
                 System.out.println(table.displayStatus());
                 System.out.println("--");
                 return dist[end];
@@ -160,7 +160,7 @@ public class Dijkstra {
         for (Integer at = end; at != null; at = prev[at]) {
             path.add(at);
 
-            table.getAdjacencyList().get(at).setStatus(Status.PATH);
+            table.getListOfNodes().get(at).setStatus(Status.PATH);
             System.out.println(table.displayStatus());
             System.out.println("--");
         }

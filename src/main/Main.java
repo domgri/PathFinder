@@ -22,8 +22,10 @@ public class Main {
 
         // Initialising table
         Table table = new Table();
+        table.generateWalls(20);
+
+        LinkedList<Node> graph = (LinkedList<Node>) table.getListOfNodes(); // unweighted graph
         /*
-        LinkedList<Node> graph = (LinkedList<Node>) table.getAdjacencyList(); // unweighted graph
         System.out.println(table.toString());
         System.out.println(table.toStringNeighboursAdjacencyList());
         System.out.println(table.displayStatus());
@@ -33,8 +35,11 @@ public class Main {
 
 
         // Algorithms
-        /*
+
         // 1. BFS
+
+
+
         BFS bfs = new BFS(table);
         LinkedList<Node> bfsResult = bfs.bfs(graph.get(5), graph.get(22));
 
@@ -42,16 +47,18 @@ public class Main {
         DFS dfs = new DFS(table);
         LinkedList<Node> dfsResult = dfs.dfs(graph.get(5), graph.get(22));
 
-*/
-        table.generateWalls(20);
 
-        /*
+
+
+
+
+
         // 3. Dijkstra's Shortest Path
         long startTimeD = System.nanoTime();
 
         Dijkstra dijkstra = new Dijkstra(table);
 
-        for(int index: dijkstra.reconstructPath(0, 624)) {
+        for(int index: dijkstra.reconstructPath(0, 143)) {
             System.out.println(index);
         }
 
@@ -59,7 +66,7 @@ public class Main {
         long totalTimeD = endTimeD - startTimeD;
 
 
-         */
+
 
 
 
@@ -79,7 +86,6 @@ public class Main {
         // 4. AStar
 
 
-
         long startTimeA = System.nanoTime();
         AStar aStar = new AStar(table);
 
@@ -92,8 +98,10 @@ public class Main {
         long endTimeA   = System.nanoTime();
         long totalTimeA = endTimeA - startTimeA;
 
+
+
         //System.out.println(totalTimeD);
-        System.out.println(totalTimeA);
+        //System.out.println(totalTimeA);
         //...
 
     }

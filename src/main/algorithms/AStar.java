@@ -6,7 +6,10 @@ import main.dataStructures.Edge;
 import main.dataStructures.MinIndexedDHeap;
 import main.dataStructures.Node;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class AStar {
 
@@ -21,7 +24,7 @@ public class AStar {
 
     public AStar(Table table) {
         this.table = table;
-        graph = table.getGraph();
+        graph = table.getAdjacencyList();
         NUMBER_OF_NODES = table.getNumberOfNodes();
         edgeCount = table.getEdgeCount();
     }
@@ -68,7 +71,7 @@ public class AStar {
 //        if current = goal
 //            return reconstruct_path(cameFrom, current)
             if (current == end) {
-                table.getAdjacencyList().get(current).setStatus(Status.FINISH);
+                table.getListOfNodes().get(current).setStatus(Status.FINISH);
                 System.out.println(table.displayStatus());
                 System.out.println("--");
                 return gScore[end];
@@ -208,8 +211,8 @@ public class AStar {
 
     private double h(int current, int end) {
 
-        Node currentNode = table.getAdjacencyList().get(current);
-        Node endNode = table.getAdjacencyList().get(end);
+        Node currentNode = table.getListOfNodes().get(current);
+        Node endNode = table.getListOfNodes().get(end);
 
         System.out.println("currentNode:" + currentNode.getIndex() + " x: " + currentNode.getX() + " y:" + currentNode.getY());
 
@@ -248,7 +251,7 @@ public class AStar {
         for (Integer at = end; at != null; at = cameFrom[at]) {
             path.add(at);
 
-            table.getAdjacencyList().get(at).setStatus(Status.PATH);
+            table.getListOfNodes().get(at).setStatus(Status.PATH);
             System.out.println(table.displayStatus());
             System.out.println("--");
         }
