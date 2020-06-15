@@ -94,7 +94,7 @@ public class Main {
 
         //System.out.println(totalTimeD);
         System.out.println(totalTimeA);
-        //.....
+        //...
 
     }
 
