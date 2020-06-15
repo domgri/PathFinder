@@ -21,10 +21,10 @@ public class Main {
     public static void main(String[] args) {
 
         // Initialising table
-        Table table = new Table();
-        table.generateWalls(20);
+        Grid grid = new Grid();
+        grid.generateWalls(20);
 
-        LinkedList<Node> graph = (LinkedList<Node>) table.getListOfNodes(); // unweighted graph
+        LinkedList<Node> graph = (LinkedList<Node>) grid.getListOfNodes(); // unweighted graph
         /*
         System.out.println(table.toString());
         System.out.println(table.toStringNeighboursAdjacencyList());
@@ -40,11 +40,11 @@ public class Main {
 
 
 
-        BFS bfs = new BFS(table);
+        BFS bfs = new BFS(grid);
         LinkedList<Node> bfsResult = bfs.bfs(graph.get(5), graph.get(22));
 
         // 2. DFS (might not work properly)
-        DFS dfs = new DFS(table);
+        DFS dfs = new DFS(grid);
         LinkedList<Node> dfsResult = dfs.dfs(graph.get(5), graph.get(22));
 
 
@@ -56,7 +56,7 @@ public class Main {
         // 3. Dijkstra's Shortest Path
         long startTimeD = System.nanoTime();
 
-        Dijkstra dijkstra = new Dijkstra(table);
+        Dijkstra dijkstra = new Dijkstra(grid);
 
         for(int index: dijkstra.reconstructPath(0, 143)) {
             System.out.println(index);
@@ -87,13 +87,13 @@ public class Main {
 
 
         long startTimeA = System.nanoTime();
-        AStar aStar = new AStar(table);
+        AStar aStar = new AStar(grid);
 
         for (int index : aStar.reconstructPath(0, 143)) {
             System.out.println(index);
         }
 
-        System.out.println(table.displayStatus());
+        System.out.println(grid.displayStatus());
 
         long endTimeA   = System.nanoTime();
         long totalTimeA = endTimeA - startTimeA;

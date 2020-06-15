@@ -3,7 +3,7 @@ package main.algorithms;
 import main.dataStructures.Node;
 import main.dataStructures.Queue;
 import main.Status;
-import main.Table;
+import main.Grid;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,11 +13,11 @@ public class BFS {
 
     //TODO: make sure its the best approach (both bfs and dfs)
     final int NUMBER_OF_NODES;;
-    private Table table;
+    private Grid grid;
 
-    public BFS(Table table) {
-        this.table = table;
-        NUMBER_OF_NODES = table.getNumberOfNodes();
+    public BFS(Grid grid) {
+        this.grid = grid;
+        NUMBER_OF_NODES = grid.getNumberOfNodes();
     }
 
     /**
@@ -30,11 +30,11 @@ public class BFS {
 
         // Perform a BFS from 'start' node
         // Explanation: ParentTracker[child's index] = parent node
-        LinkedList<Node> parentTracker = solveBfs(start, end, (LinkedList<Node>)table.getListOfNodes());
+        LinkedList<Node> parentTracker = solveBfs(start, end, (LinkedList<Node>) grid.getListOfNodes());
 
 
         // Return reconstructed (reversed) path from s -> e
-        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getListOfNodes());
+        return reconstructPath(start, end, parentTracker, (LinkedList<Node>) grid.getListOfNodes());
     }
 
     /**
@@ -79,7 +79,7 @@ public class BFS {
                     graph.get(next.getIndex()).setStatus(Status.VISITED);
                     relationsList.set(next.getIndex(), node);
 
-                    System.out.println(table.displayStatus());
+                    System.out.println(grid.displayStatus());
                     System.out.println("--");
                 }
             }
@@ -102,7 +102,7 @@ public class BFS {
             reversedList.add(path.get(i));
             graph.get(path.get(i).getIndex()).setStatus(Status.PATH);
 
-            System.out.println(table.displayStatus());
+            System.out.println(grid.displayStatus());
             System.out.println("--");
         }
 

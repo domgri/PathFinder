@@ -13,13 +13,12 @@ import java.util.Random;
 
 
 /**
- * Represents the table, where all the algorithms should be performed.
- * Consists of Nodes, connected with each other.
- * Connections are saved in Grid and Adjacency List
+ * Represents the main grid.
+ * Data stored in the listOfNodes(Nodes) and adjacencyList(Edges)
  */
 
 //TODO: make sure dfs is correct, now its slightly weird
-public class Table {
+public class Grid {
 
     private final static int ROW_SIZE = 12;
     private final static int COLUMN_SIZE = 12;
@@ -34,36 +33,20 @@ public class Table {
     private List<List<Edge>> adjacencyList;
     private int edgeCount;
 
-    public Table() {
+    /**
+     * Initializes listOfNodes and adjacencyList by reserving memory and setting connections between neighbours.
+     */
+    public Grid() {
         listOfNodes = new LinkedList<Node>();
         adjacencyList = new ArrayList<>(NUMBER_OF_NODES);
-
         createEmptyLists();
-        //createEmptyAdjacencyList();
-        //createEmptyListOfNodes();
-        //createListOfNodes();
-        //createAdjacencyList();
         setAllNeighbours();
     }
 
-    public int getNumberOfNodes() {
-        return NUMBER_OF_NODES;
-    }
-
-    public List<Node> getListOfNodes() {
-        return listOfNodes;
-    }
-
-    public List<List<Edge>> getAdjacencyList() {
-        return adjacencyList;
-    }
-
-    public int getEdgeCount() {
-        return edgeCount;
-    }
-
+    /**
+     * Creates an empty listOfNodes and adjacencyList. O(n)
+     */
     public void createEmptyLists() {
-
         int counter = 0;
         int currentX = 0;
         int currentY = 0;
@@ -85,6 +68,9 @@ public class Table {
         }
     }
 
+    /**
+     * Sets all neighbours for listOfNodes and  adjacencyList. O(n)
+     */
     private void setAllNeighbours() {
 
         for (int index = 0; index < NUMBER_OF_NODES; index++) {
@@ -118,7 +104,7 @@ public class Table {
     }
 
     /**
-     * Adds a directed edge to the graph
+     * Adds a directed edge to the adjacencyList. O(1)
      *
      * @param from - The index of the node the directed edge starts at
      * @param to   - The index of the node the directed edge end at
@@ -129,8 +115,39 @@ public class Table {
         adjacencyList.get(from).add(new Edge(to, cost));
     }
 
+    /**
+     * Returns the total number of nodes in the grid
+     * @return Total number of nodes
+     */
+    public int getNumberOfNodes() {
+        return NUMBER_OF_NODES;
+    }
 
-    // Grid for now
+    /**
+     * Returns a listOfNodes
+     * @return List<Node> listOfNodes
+     */
+    public List<Node> getListOfNodes() {
+        return listOfNodes;
+    }
+
+    /**
+     * Returns an adjacencyList
+     * @return List<List<Edge>> adjacencyList
+     */
+    public List<List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    /**
+     * Returns an edgeCount
+     * @return int edgeCount
+     */
+    public int getEdgeCount() {
+        return edgeCount;
+    }
+
+
     @Override
     public String toString() {
 
@@ -313,9 +330,7 @@ public class Table {
 
 
 
-
-
-    // TODO: feature tpo implement
+    // TODO: possible feature (useful for Dijkstra, AStar)
     public void addWeight(int index) {
 
         listOfNodes.get(index).setStatus(Status.WALL);
@@ -331,43 +346,32 @@ public class Table {
         }
     }
 
+    /**
+     * Sets a wall at the given index and removes edges towards it
+     * @param index Node to set as wall
+     */
     public void addWall(int index) {
 
         listOfNodes.get(index).setStatus(Status.WALL);
 
-
-
         for (Node neighbourNode : listOfNodes.get(index).getNeighbours()) {
 
-            System.out.println( neighbourNode.getIndex() + "before");
-            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
-                System.out.println(edge.getTo());
-            }
-
-            System.out.println("after");
             for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
                 if (edge.getTo() == index) {
                     adjacencyList.get(neighbourNode.getIndex()).remove(edge);
                     break;
                 }
-
-                /*
-                if (edge.getTo() == index) {
-                    graph.get(neighbourNode.getIndex()).remove(index);
-                    edge.setCost(DEFAULT_WALL_COST);
-                    break;
-                }
-                */
-
             }
-            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
-                System.out.println(edge.getTo());
-            }
-
         }
     }
 
+    /**
+     * Sets start, end nodes with specific marking and removes walls around them
+     * @param start Start Node
+     * @param end End Node
+     */
     public void addStartEnd(int start, int end) {
+
         listOfNodes.get(start).setStatus(Status.START);
         listOfNodes.get(start).setStatus(Status.FINISH);
 
@@ -390,6 +394,10 @@ public class Table {
         }
     }
 
+    /**
+     * Randomly places wall, according to the given percentage. O(n)
+     * @param percent An approximate level of walls density (from 0 to 100)
+     */
     public void generateWalls(int percent) {
 
         if ((percent < 0) || (percent > 100)) {
@@ -403,8 +411,6 @@ public class Table {
                 addWall(node.getIndex());
             }
         }
-
-
 
     }
 

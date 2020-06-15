@@ -3,7 +3,7 @@ package main.algorithms;
 import main.dataStructures.Node;
 import main.dataStructures.Stack;
 import main.Status;
-import main.Table;
+import main.Grid;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -11,22 +11,22 @@ import java.util.LinkedList;
 public class DFS {
 
     final int NUMBER_OF_NODES;
-    private Table table;
+    private Grid grid;
 
-    public DFS(Table table) {
-        this.table = table;
-        NUMBER_OF_NODES = table.getNumberOfNodes();
+    public DFS(Grid grid) {
+        this.grid = grid;
+        NUMBER_OF_NODES = grid.getNumberOfNodes();
     }
 
     public LinkedList<Node> dfs(Node start, Node end) {
 
         // Perform a DFS from 'start' node
         // Explanation: ParentTracker[child's index] = parent node
-        LinkedList<Node> parentTracker = solveDfs(start, end, (LinkedList<Node>)table.getListOfNodes());
+        LinkedList<Node> parentTracker = solveDfs(start, end, (LinkedList<Node>) grid.getListOfNodes());
 
 
         // Return reconstructed (reversed) path from s -> e
-        return reconstructPath(start, end, parentTracker, (LinkedList<Node>)table.getListOfNodes());
+        return reconstructPath(start, end, parentTracker, (LinkedList<Node>) grid.getListOfNodes());
     }
 
     public LinkedList<Node> solveDfs(Node start, Node end, LinkedList<Node> graph) {
@@ -66,7 +66,7 @@ public class DFS {
                     graph.get(next.getIndex()).setStatus(Status.VISITED);
                     relationsList.set(next.getIndex(), node);
 
-                    System.out.println(table.displayStatus());
+                    System.out.println(grid.displayStatus());
                     System.out.println("--");
                 }
             }
@@ -96,7 +96,7 @@ public class DFS {
             reversedList.add(path.get(i));
             graph.get(path.get(i).getIndex()).setStatus(Status.PATH);
 
-            System.out.println(table.displayStatus());
+            System.out.println(grid.displayStatus());
             System.out.println("--");
         }
 

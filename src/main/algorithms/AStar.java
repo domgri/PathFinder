@@ -1,7 +1,7 @@
 package main.algorithms;
 
 import main.Status;
-import main.Table;
+import main.Grid;
 import main.dataStructures.Edge;
 import main.dataStructures.MinIndexedDHeap;
 import main.dataStructures.Node;
@@ -15,18 +15,18 @@ public class AStar {
 
     final int NUMBER_OF_NODES;
     private int edgeCount;
-    private Table table;
+    private Grid grid;
 
     private double[] gScore;
     private double[] fScore;
     private Integer[] cameFrom;
     private List<List<Edge>> graph;
 
-    public AStar(Table table) {
-        this.table = table;
-        graph = table.getAdjacencyList();
-        NUMBER_OF_NODES = table.getNumberOfNodes();
-        edgeCount = table.getEdgeCount();
+    public AStar(Grid grid) {
+        this.grid = grid;
+        graph = grid.getAdjacencyList();
+        NUMBER_OF_NODES = grid.getNumberOfNodes();
+        edgeCount = grid.getEdgeCount();
     }
 
 
@@ -61,8 +61,8 @@ public class AStar {
 //
 //    while openSet is not empty
         while (!openSet.isEmpty()) {
-            table.displayClosedSet(closedSet);
-            System.out.println(table.displayOpenSet(openSet));
+            grid.displayClosedSet(closedSet);
+            System.out.println(grid.displayOpenSet(openSet));
 
 
 //    current := the node in openSet having the lowest fScore[] value
@@ -71,8 +71,8 @@ public class AStar {
 //        if current = goal
 //            return reconstruct_path(cameFrom, current)
             if (current == end) {
-                table.getListOfNodes().get(current).setStatus(Status.FINISH);
-                System.out.println(table.displayStatus());
+                grid.getListOfNodes().get(current).setStatus(Status.FINISH);
+                System.out.println(grid.displayStatus());
                 System.out.println("--");
                 return gScore[end];
             }
@@ -211,8 +211,8 @@ public class AStar {
 
     private double h(int current, int end) {
 
-        Node currentNode = table.getListOfNodes().get(current);
-        Node endNode = table.getListOfNodes().get(end);
+        Node currentNode = grid.getListOfNodes().get(current);
+        Node endNode = grid.getListOfNodes().get(end);
 
         System.out.println("currentNode:" + currentNode.getIndex() + " x: " + currentNode.getX() + " y:" + currentNode.getY());
 
@@ -251,8 +251,8 @@ public class AStar {
         for (Integer at = end; at != null; at = cameFrom[at]) {
             path.add(at);
 
-            table.getListOfNodes().get(at).setStatus(Status.PATH);
-            System.out.println(table.displayStatus());
+            grid.getListOfNodes().get(at).setStatus(Status.PATH);
+            System.out.println(grid.displayStatus());
             System.out.println("--");
         }
         Collections.reverse(path);

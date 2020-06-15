@@ -13,7 +13,7 @@ package main.algorithms;
 // figure out another solution
 
 import main.Status;
-import main.Table;
+import main.Grid;
 import main.dataStructures.MinIndexedDHeap;
 import main.dataStructures.Edge;
 
@@ -30,18 +30,18 @@ public class Dijkstra {
 
     final int NUMBER_OF_NODES;
     private int edgeCount;
-    private Table table;
+    private Grid grid;
 
     private double[] dist;
     private Integer[] prev;
     private List<List<Edge>> graph;
 
     // TODO: think about saving table and graph. Duplicate a little (also AStar)
-    public Dijkstra(Table table) {
-        this.table = table;
-        graph = table.getAdjacencyList();
-        NUMBER_OF_NODES = table.getNumberOfNodes();
-        edgeCount = table.getEdgeCount();
+    public Dijkstra(Grid grid) {
+        this.grid = grid;
+        graph = grid.getAdjacencyList();
+        NUMBER_OF_NODES = grid.getNumberOfNodes();
+        edgeCount = grid.getEdgeCount();
     }
 
     public List<List<Edge>> getGraph() {
@@ -67,8 +67,8 @@ public class Dijkstra {
         Arrays.fill(dist, Double.POSITIVE_INFINITY);
         dist[start] = 0.0;
 
-        table.addStartEnd(start, end);
-        System.out.println(table.displayStatus());
+        grid.addStartEnd(start, end);
+        System.out.println(grid.displayStatus());
         System.out.println("--");
 
         boolean[] visited = new boolean[NUMBER_OF_NODES];
@@ -95,8 +95,8 @@ public class Dijkstra {
                 }
 
                 System.out.println("edge:" + prev[edge.getTo()] + " edegTo:" +edge.getTo());
-                table.getListOfNodes().get(nodeId).setStatus(Status.VISITED);
-                System.out.println(table.displayStatus());
+                grid.getListOfNodes().get(nodeId).setStatus(Status.VISITED);
+                System.out.println(grid.displayStatus());
 
 
                 // Relax edge by updating minimum cost if applicable
@@ -123,8 +123,8 @@ public class Dijkstra {
             // shortest path by routing through any other nodes since Dijkstra's is
             //greedy and there are no negative edge weights.
             if (nodeId == end) {
-                table.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
-                System.out.println(table.displayStatus());
+                grid.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
+                System.out.println(grid.displayStatus());
                 System.out.println("--");
                 return dist[end];
             }
@@ -160,8 +160,8 @@ public class Dijkstra {
         for (Integer at = end; at != null; at = prev[at]) {
             path.add(at);
 
-            table.getListOfNodes().get(at).setStatus(Status.PATH);
-            System.out.println(table.displayStatus());
+            grid.getListOfNodes().get(at).setStatus(Status.PATH);
+            System.out.println(grid.displayStatus());
             System.out.println("--");
         }
         Collections.reverse(path);
