@@ -1,15 +1,16 @@
 package main;
 
-
-import main.dataStructures.MinIndexedDHeap;
-import main.dataStructures.Node;
-import main.dataStructures.Edge;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import main.dataStructures.MinIndexedDHeap;
+import main.dataStructures.Node;
+import main.dataStructures.Edge;
+import main.dataStructures.Queue;
+import main.dataStructures.Stack;
 
 
 /**
@@ -145,6 +146,88 @@ public class Grid {
      */
     public int getEdgeCount() {
         return edgeCount;
+    }
+
+    /**
+     * Sets a wall at the given index and removes edges towards it
+     * @param index Node to set as wall
+     */
+    public void addWall(int index) {
+
+        listOfNodes.get(index).setStatus(Status.WALL);
+
+        for (Node neighbourNode : listOfNodes.get(index).getNeighbours()) {
+
+            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
+                if (edge.getTo() == index) {
+                    adjacencyList.get(neighbourNode.getIndex()).remove(edge);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets start, end nodes with specific marking and removes walls around them
+     * @param start Start Node
+     * @param end End Node
+     */
+    public void addStartEnd(int start, int end) {
+
+        listOfNodes.get(start).setStatus(Status.START);
+        listOfNodes.get(start).setStatus(Status.FINISH);
+
+        for (Node neighbourNode : listOfNodes.get(start).getNeighbours()) {
+            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
+                if (edge.getTo() == start) {
+                    edge.setCost(DEFAULT_EDGE_COST);
+                    break;
+                }
+            }
+        }
+
+        for (Node neighbourNode : listOfNodes.get(end).getNeighbours()) {
+            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
+                if (edge.getTo() == end) {
+                    edge.setCost(DEFAULT_EDGE_COST);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Randomly places wall, according to the given percentage. O(n)
+     * @param percent An approximate level of walls density (from 0 to 100)
+     */
+    public void generateWalls(int percent) {
+
+        if ((percent < 0) || (percent > 100)) {
+            throw new IllegalArgumentException("Number should be between 0 and 100");
+        }
+
+        Random r = new Random();
+
+        for (Node node : listOfNodes) {
+            if (r.nextInt(101) < percent) {
+                addWall(node.getIndex());
+            }
+        }
+
+    }
+
+    /**
+     * Clears symbolic representation of Nodes. O(n)
+     */
+    public void clearNodes() {
+        for (Node node : listOfNodes) {
+            if (node.getStatus() == Status.WALL) {
+                node.setStatus(Status.WALL);
+            } else {
+                node.setStatus(Status.EMPTY);
+            }
+
+        }
     }
 
 
@@ -286,6 +369,24 @@ public class Grid {
         return displayStatus();
     }
 
+    public String displayQueue(Queue<Node> openSet) {
+
+        for (Node node : openSet) {
+            listOfNodes.get(node.getIndex()).setStatus(Status.OPEN);
+        }
+
+        return displayStatus();
+    }
+
+    public String displayStack(Stack<Node> openSet) {
+
+        for (Node node : openSet) {
+            listOfNodes.get(node.getIndex()).setStatus(Status.OPEN);
+        }
+
+        return displayStatus();
+    }
+
     public void displayClosedSet(boolean[] closedSet) {
 
         for (int i = 0; i < closedSet.length; i++) {
@@ -329,7 +430,6 @@ public class Grid {
     }
 
 
-
     // TODO: possible feature (useful for Dijkstra, AStar)
     public void addWeight(int index) {
 
@@ -346,72 +446,6 @@ public class Grid {
         }
     }
 
-    /**
-     * Sets a wall at the given index and removes edges towards it
-     * @param index Node to set as wall
-     */
-    public void addWall(int index) {
 
-        listOfNodes.get(index).setStatus(Status.WALL);
-
-        for (Node neighbourNode : listOfNodes.get(index).getNeighbours()) {
-
-            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
-                if (edge.getTo() == index) {
-                    adjacencyList.get(neighbourNode.getIndex()).remove(edge);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Sets start, end nodes with specific marking and removes walls around them
-     * @param start Start Node
-     * @param end End Node
-     */
-    public void addStartEnd(int start, int end) {
-
-        listOfNodes.get(start).setStatus(Status.START);
-        listOfNodes.get(start).setStatus(Status.FINISH);
-
-        for (Node neighbourNode : listOfNodes.get(start).getNeighbours()) {
-            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
-                if (edge.getTo() == start) {
-                    edge.setCost(DEFAULT_EDGE_COST);
-                    break;
-                }
-            }
-        }
-
-        for (Node neighbourNode : listOfNodes.get(end).getNeighbours()) {
-            for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
-                if (edge.getTo() == end) {
-                    edge.setCost(DEFAULT_EDGE_COST);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Randomly places wall, according to the given percentage. O(n)
-     * @param percent An approximate level of walls density (from 0 to 100)
-     */
-    public void generateWalls(int percent) {
-
-        if ((percent < 0) || (percent > 100)) {
-            throw new IllegalArgumentException("Number should be between 0 and 100");
-        }
-
-        Random r = new Random();
-
-        for (Node node : listOfNodes) {
-            if (r.nextInt(101) < percent) {
-                addWall(node.getIndex());
-            }
-        }
-
-    }
 
 }

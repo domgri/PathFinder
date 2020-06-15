@@ -10,52 +10,46 @@ package main;
 import main.algorithms.*;
 import main.dataStructures.Node;
 
+import javax.swing.*;
 import java.util.*;
 
 
 public class Main {
 
-    //final static int ROW_SIZE = 12;
-    //final static int COLUMN_SIZE = 12;
-
     public static void main(String[] args) {
 
         // Initialising table
         Grid grid = new Grid();
-        grid.generateWalls(20);
+
+        // generating walls
+        //grid.generateWalls(20);
 
         LinkedList<Node> graph = (LinkedList<Node>) grid.getListOfNodes(); // unweighted graph
-        /*
-        System.out.println(table.toString());
-        System.out.println(table.toStringNeighboursAdjacencyList());
-        System.out.println(table.displayStatus());
-        System.out.println(table.toStringNeighboursGraph());
-        */
-
-
 
         // Algorithms
-
+/*
         // 1. BFS
-
-
-
         BFS bfs = new BFS(grid);
-        LinkedList<Node> bfsResult = bfs.bfs(graph.get(5), graph.get(22));
+        LinkedList<Node> bfsResult = bfs.bfs(graph.get(0), graph.get(143));
+*/
 
         // 2. DFS (might not work properly)
+        grid.clearNodes();
         DFS dfs = new DFS(grid);
-        LinkedList<Node> dfsResult = dfs.dfs(graph.get(5), graph.get(22));
+        LinkedList<Node> dfsResult = dfs.dfs(graph.get(0), graph.get(117));
 
 
 
 
 
 
+
+/*
 
         // 3. Dijkstra's Shortest Path
         long startTimeD = System.nanoTime();
 
+        grid.clearNodes();
         Dijkstra dijkstra = new Dijkstra(grid);
 
         for(int index: dijkstra.reconstructPath(0, 143)) {
@@ -69,24 +63,11 @@ public class Main {
 
 
 
-
-
-
-        /*
-        for (int i = 61; i <= 69; i++) {
-            table.addWall(i);
-        }
-
-        table.addWall(51);
-        table.addWall(41);
-        table.addWall(31);
-
-         */
-
         // 4. AStar
 
 
         long startTimeA = System.nanoTime();
+        grid.clearNodes();
         AStar aStar = new AStar(grid);
 
         for (int index : aStar.reconstructPath(0, 143)) {
@@ -99,11 +80,13 @@ public class Main {
         long totalTimeA = endTimeA - startTimeA;
 
 
-
         //System.out.println(totalTimeD);
         //System.out.println(totalTimeA);
         //...
 
+*/
     }
+
+
 
 }

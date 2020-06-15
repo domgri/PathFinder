@@ -46,6 +46,8 @@ public class DFS {
 
         // O(n) ( worst case: O(n * 4) )
         while (!stack.isEmpty()) {
+            grid.displayClosedSet(visitedNodes);
+            System.out.println(grid.displayStack(stack));
 
             // Gets front node
             Node node = stack.pop();
@@ -63,7 +65,7 @@ public class DFS {
                 if (!visitedNodes[next.getIndex()]) {
                     stack.push(next);
                     visitedNodes[next.getIndex()] = true;
-                    graph.get(next.getIndex()).setStatus(Status.VISITED);
+                    //graph.get(next.getIndex()).setStatus(Status.VISITED);
                     relationsList.set(next.getIndex(), node);
 
                     System.out.println(grid.displayStatus());

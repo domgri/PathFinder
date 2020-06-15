@@ -26,7 +26,7 @@ public class BFS {
      * @param end Node to finish
      * @return Path from start to finish
      */
-    public LinkedList<Node> bfs(Node start, Node end) {
+    public LinkedList<Node>bfs(Node start, Node end) {
 
         // Perform a BFS from 'start' node
         // Explanation: ParentTracker[child's index] = parent node
@@ -59,6 +59,8 @@ public class BFS {
 
         // O(n) ( worst case: O(n * 4) )
         while (!queue.isEmpty()) {
+            grid.displayClosedSet(visitedNodes);
+            System.out.println(grid.displayQueue(queue));
 
             // Gets front node
             Node node = queue.dequeue();
@@ -76,7 +78,7 @@ public class BFS {
                 if (!visitedNodes[next.getIndex()]) {
                     queue.enqueue(next);
                     visitedNodes[next.getIndex()] = true;
-                    graph.get(next.getIndex()).setStatus(Status.VISITED);
+                    //graph.get(next.getIndex()).setStatus(Status.VISITED);
                     relationsList.set(next.getIndex(), node);
 
                     System.out.println(grid.displayStatus());
