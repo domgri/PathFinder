@@ -20,17 +20,22 @@ public class AStar {
     private double[] distance;
     private double[] score;
     private Integer[] previous;
-    private List<List<Edge>> graph;
+    private List<List<Edge>> adjacencyList;
 
     public AStar(Grid grid) {
         this.grid = grid;
-        graph = grid.getAdjacencyList();
+        adjacencyList = grid.getAdjacencyList();
         NUMBER_OF_NODES = grid.getNumberOfNodes();
         edgeCount = grid.getEdgeCount();
     }
 
-    public List<List<Edge>> getGraph() {
-        return graph;
+    public List<List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public List<Integer> start(int start, int end) {
+
+        return reconstructPath(start, end);
     }
 
     public double aStar(int start, int end) {
@@ -87,7 +92,7 @@ public class AStar {
             closedSet[nodeId] = true; // REMOVE if needed
 
             // Traverse through neighbours (edges)
-            for (Edge neighbour : graph.get(nodeId)) {
+            for (Edge neighbour : adjacencyList.get(nodeId)) {
 
                 // We cannot get a shorter path by revisiting
                 // a node we have already visited before

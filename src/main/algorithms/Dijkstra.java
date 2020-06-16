@@ -12,10 +12,7 @@ package main.algorithms;
 // Maybe change current implementation to this within everywhere or
 // figure out another solution
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import main.Status;
 import main.Grid;
@@ -28,7 +25,6 @@ public class Dijkstra {
     private int edgeCount;
     private Grid grid;
 
-    private double[] distance;
     private Integer[] previous;
     private List<List<Edge>> adjacencyList;
 
@@ -43,6 +39,11 @@ public class Dijkstra {
 
     public List<List<Edge>> getAdjacencyList() {
         return adjacencyList;
+    }
+
+    public List<Integer> start(int start, int end) {
+
+        return reconstructPath(start, end);
     }
 
     // Run Dijkstra's algorithm on a directed graph to find the shortest path
@@ -61,7 +62,7 @@ public class Dijkstra {
         openSet.insert(start, 0.0);
 
         // Maintain an array of the minimum distance to each node.
-        distance = new double[NUMBER_OF_NODES];
+        double[] distance = new double[NUMBER_OF_NODES];
         Arrays.fill(distance, Double.POSITIVE_INFINITY);
         distance[start] = 0.0;
 
