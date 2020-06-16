@@ -70,7 +70,7 @@ public class DFS {
             grid.displayClosedSet(visitedNodes);
             System.out.println(grid.displayStack(stack));
 
-            // Gets front node from the stack
+            // Gets the front node from the stack
             Node node = stack.pop();
 
             // If its exit node, terminate

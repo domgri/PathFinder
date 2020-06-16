@@ -1,15 +1,15 @@
 package main.algorithms;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import main.Status;
 import main.Grid;
 import main.dataStructures.Edge;
 import main.dataStructures.MinIndexedDHeap;
 import main.dataStructures.Node;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class AStar {
 
@@ -17,9 +17,9 @@ public class AStar {
     private int edgeCount;
     private Grid grid;
 
-    private double[] gScore;
-    private double[] fScore;
-    private Integer[] cameFrom;
+    private double[] distance;
+    private double[] score;
+    private Integer[] previous;
     private List<List<Edge>> graph;
 
     public AStar(Grid grid) {
@@ -29,91 +29,85 @@ public class AStar {
         edgeCount = grid.getEdgeCount();
     }
 
-
     public List<List<Edge>> getGraph() {
         return graph;
     }
 
     public double aStar(int start, int end) {
 
-//    openSet := {start}
+        // Indexed Priority Queue (ipq) contains nodes that were added as most promising neighbours
+        // On top, there is the most promising one.
+        // Lookup O(1)
         int degree = edgeCount / NUMBER_OF_NODES;
         MinIndexedDHeap<Double> openSet = new MinIndexedDHeap(degree, NUMBER_OF_NODES);
         openSet.insert(start, 0.0);
 
-//    cameFrom := an empty map
-        cameFrom = new Integer[NUMBER_OF_NODES];
+        // Maintain an array of the minimum distance to each node.
+        distance = new double[NUMBER_OF_NODES];
+        Arrays.fill(distance, Double.POSITIVE_INFINITY);
+        distance[start] = 0.0;
 
+        grid.addStartEnd(start, end);
+        System.out.println(grid.displayStatus());
+        System.out.println("--");
+
+        // List for tracking parent nodes
+        // previous[child's index] = parent node
+        previous = new Integer[NUMBER_OF_NODES];
+
+        // Displays which nodes are already visited
+        // closedSet[node's id] = true/false (visited/not visited)
         boolean[] closedSet = new boolean[NUMBER_OF_NODES];
 
-//    gScore := map with default value of Infinity
-//    gScore[start] := 0
-        gScore = new double[NUMBER_OF_NODES];
-        Arrays.fill(gScore, Double.POSITIVE_INFINITY);
-        gScore[start] = 0.0;
+        // Represents current best guess
+        // score[n] = distance[n] + heuristic[n]
+        score = new double[NUMBER_OF_NODES];
+        Arrays.fill(score, Double.POSITIVE_INFINITY);
+        score[start] = heuristic(start, end);
 
-//    // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
-//    fScore := map with default value of Infinity
-//    fScore[start] := h(start)
-        fScore = new double[NUMBER_OF_NODES];
-        Arrays.fill(fScore, Double.POSITIVE_INFINITY);
-        fScore[start] = h(start, end);
-//
-//    while openSet is not empty
         while (!openSet.isEmpty()) {
             grid.displayClosedSet(closedSet);
             System.out.println(grid.displayOpenSet(openSet));
 
 
-//    current := the node in openSet having the lowest fScore[] value
-            int current = openSet.peekMinKeyIndex();
+            // Gets the top node's id from the heap
+            int nodeId = openSet.peekMinKeyIndex();
 
-//        if current = goal
-//            return reconstruct_path(cameFrom, current)
-            if (current == end) {
-                grid.getListOfNodes().get(current).setStatus(Status.FINISH);
+
+            // If its the end node, terminate
+            if (nodeId == end) {
+                grid.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
                 System.out.println(grid.displayStatus());
                 System.out.println("--");
-                return gScore[end];
+                return distance[end];
             }
 
-//        openSet.Remove(current)
+            // Poll the value form the heap, set it as visited
             double minvalue = openSet.pollMinValue();
-            closedSet[current] = true; // REMOVE if needed
-            //table.getAdjacencyList().get(nodeId).setStatus(Status.CLOSED);
+            closedSet[nodeId] = true; // REMOVE if needed
 
-            System.out.println("mnvalue " + minvalue);
-            System.out.println("gScore[current] " + gScore[current]);
+            // Traverse through neighbours (edges)
+            for (Edge neighbour : graph.get(nodeId)) {
 
-//            for each neighbor of current
-            for (Edge neighbour : graph.get(current)) {
-
+                // We cannot get a shorter path by revisiting
+                // a node we have already visited before
                 if (closedSet[neighbour.getTo()]) {
                    continue;
                 }
-                //table.getAdjacencyList().get(current).setStatus(Status.VISITED);
 
-    // d(current,neighbor) is the weight of the edge from current to neighbor
-//    // tentative_gScore is the distance from start to the neighbor through current
-//    tentative_gScore := gScore[current] + d(current, neighbor)
-                double newDist = gScore[current] + neighbour.getCost();
-//            if tentative_gScore < gScore[neighbor]
-                if (newDist < gScore[neighbour.getTo()]) {
 
-//    // This path to neighbor is better than any previous one. Record it!
-//    cameFrom[neighbor] := current
-                    cameFrom[neighbour.getTo()] = current;
-//    gScore[neighbor] := tentative_gScore
-                    gScore[neighbour.getTo()] = newDist;
-//    fScore[neighbor] := gScore[neighbor] + h(neighbor)
-                    fScore[neighbour.getTo()] = newDist + h(current, end);
-//                if neighbor not in openSet
-//                    openSet.add(neighbor)
-                    // Adds by using guess===65465
+                double newDist = distance[nodeId] + neighbour.getCost();
+                if (newDist < distance[neighbour.getTo()]) {
+                    previous[neighbour.getTo()] = nodeId;
+                    distance[neighbour.getTo()] = newDist;
+                    score[neighbour.getTo()] = newDist + heuristic(nodeId, end);
+
+                    // Insert the cost of going to a node for the first time in the PQ,
+                    // or try and update it to a better value by calling decrease
                     if (!openSet.contains(neighbour.getTo())) {
-                        openSet.insert(neighbour.getTo(), fScore[neighbour.getTo()]);
+                        openSet.insert(neighbour.getTo(), score[neighbour.getTo()]);
                     } else {
-                        openSet.decrease(neighbour.getTo(), fScore[neighbour.getTo()]);
+                        openSet.decrease(neighbour.getTo(), score[neighbour.getTo()]);
                     }
                 }
 
@@ -209,28 +203,21 @@ public class AStar {
 
     }
 
-    private double h(int current, int end) {
-
+    /**
+     * Returns approximate distance between nodes (lower better)
+     * Implementation - Manhattan distance
+     * @param current current node index
+     * @param end end node index
+     * @return calculation
+     */
+    private double heuristic(int current, int end) {
         Node currentNode = grid.getListOfNodes().get(current);
         Node endNode = grid.getListOfNodes().get(end);
 
-        System.out.println("currentNode:" + currentNode.getIndex() + " x: " + currentNode.getX() + " y:" + currentNode.getY());
-
-        System.out.println("endNode:" + endNode.getIndex() + " x: " + endNode.getX() + " y:" + endNode.getY());
-
-
-        /*
-        double xs = Math.abs(endNode.getX() - currentNode.getX());
-        double ys = Math.abs(endNode.getY() - currentNode.getY());
-
-        return Math.hypot(xs, ys);
-         */
-
         double dx = Math.abs(currentNode.getX() - endNode.getX());
         double dy = Math.abs(currentNode.getY() - endNode.getY());
-        System.out.println("dx" + dx + " " + (currentNode.getX() - endNode.getX()));
+
         return dx + dy;
-        //return Math.hypot(dx, dy);
     }
 
     public List<Integer> reconstructPath(int start, int end) {
@@ -244,18 +231,20 @@ public class AStar {
         List<Integer> path = new ArrayList<>();
         double dist = aStar(start, end);
         if (dist == Double.POSITIVE_INFINITY) {
-            System.out.println("Positiv einfinity");
+            System.out.println("No path!");
             return path;
         }
 
-        for (Integer at = end; at != null; at = cameFrom[at]) {
+        for (Integer at = end; at != null; at = previous[at]) {
             path.add(at);
 
             grid.getListOfNodes().get(at).setStatus(Status.PATH);
             System.out.println(grid.displayStatus());
             System.out.println("--");
         }
+
         Collections.reverse(path);
+
         return path;
     }
 }

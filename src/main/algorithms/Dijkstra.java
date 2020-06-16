@@ -12,19 +12,15 @@ package main.algorithms;
 // Maybe change current implementation to this within everywhere or
 // figure out another solution
 
-import main.Status;
-import main.Grid;
-import main.dataStructures.MinIndexedDHeap;
-import main.dataStructures.Edge;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import main.Status;
+import main.Grid;
+import main.dataStructures.MinIndexedDHeap;
+import main.dataStructures.Edge;
 
 public class Dijkstra {
 
@@ -32,78 +28,86 @@ public class Dijkstra {
     private int edgeCount;
     private Grid grid;
 
-    private double[] dist;
-    private Integer[] prev;
-    private List<List<Edge>> graph;
+    private double[] distance;
+    private Integer[] previous;
+    private List<List<Edge>> adjacencyList;
 
     // TODO: think about saving table and graph. Duplicate a little (also AStar)
+    // GRID only used for visualisations. All calculations performed in adjacency list
     public Dijkstra(Grid grid) {
         this.grid = grid;
-        graph = grid.getAdjacencyList();
+        adjacencyList = grid.getAdjacencyList();
         NUMBER_OF_NODES = grid.getNumberOfNodes();
         edgeCount = grid.getEdgeCount();
     }
 
-    public List<List<Edge>> getGraph() {
-        return graph;
+    public List<List<Edge>> getAdjacencyList() {
+        return adjacencyList;
     }
 
     // Run Dijkstra's algorithm on a directed graph to find the shortest path
     // from a starting node to an ending node. If there is no path between the
-    //starting node and the destination node the returned value is set to bb
+    //starting node and the destination node the returned value is set to be
     // Double.POSITIVE_INFINITY
 
-    // Remove end node if you want to have shortest path to every node
+
     public double dijkstra(int start, int end) {
 
-        // Keep an Indexed Priority Queue (ipq) of the next most promising node
-        // to visit.
+        // Indexed Priority Queue (ipq) contains nodes that were added as neighbours.
+        // On top, there is the most promising one.
+        // Lookup O(1)
         int degree = edgeCount / NUMBER_OF_NODES;
-        MinIndexedDHeap<Double> ipq = new MinIndexedDHeap(degree, NUMBER_OF_NODES);
-        ipq.insert(start, 0.0);
+        MinIndexedDHeap<Double> openSet = new MinIndexedDHeap(degree, NUMBER_OF_NODES);
+        openSet.insert(start, 0.0);
 
         // Maintain an array of the minimum distance to each node.
-        dist = new double[NUMBER_OF_NODES];
-        Arrays.fill(dist, Double.POSITIVE_INFINITY);
-        dist[start] = 0.0;
+        distance = new double[NUMBER_OF_NODES];
+        Arrays.fill(distance, Double.POSITIVE_INFINITY);
+        distance[start] = 0.0;
 
         grid.addStartEnd(start, end);
         System.out.println(grid.displayStatus());
         System.out.println("--");
 
-        boolean[] visited = new boolean[NUMBER_OF_NODES];
-        prev = new Integer[NUMBER_OF_NODES];
+        // List for tracking parent nodes
+        // previous[child's index] = parent node
+        previous = new Integer[NUMBER_OF_NODES];
 
-        while (!ipq.isEmpty()) {
-            int nodeId = ipq.peekMinKeyIndex();
+        // Displays which nodes are already visited
+        // closedSet[node's id] = true/false (visited/not visited)
+        boolean[] closedSet = new boolean[NUMBER_OF_NODES];
 
-            visited[nodeId] = true;
-            double minvalue = ipq.pollMinValue();
+        while (!openSet.isEmpty()) {
+            grid.displayClosedSet(closedSet);
+            System.out.println(grid.displayOpenSet(openSet));
 
-            // We already found a better path before we got to
-            // processing this node so we can ignore it
-            if (minvalue > dist[nodeId]) {
+            // Gets the top node's id from the heap
+            int nodeId = openSet.peekMinKeyIndex();
+
+
+            // Poll the value form the heap, set it as visited
+            double minvalue = openSet.pollMinValue();
+            closedSet[nodeId] = true;
+
+            // If we have a better path, continue with another node
+            if (minvalue > distance[nodeId]) {
                 continue;
             }
 
-            for (Edge edge : graph.get(nodeId)) {
+            // Otherwise, traverse through neighbours (edges)
+            for (Edge edge : adjacencyList.get(nodeId)) {
 
                 // We cannot get a shorter path by revisiting
                 // a node we have already visited before
-                if (visited[edge.getTo()]) {
+                if (closedSet[edge.getTo()]) {
                     continue;
                 }
 
-                System.out.println("edge:" + prev[edge.getTo()] + " edegTo:" +edge.getTo());
-                grid.getListOfNodes().get(nodeId).setStatus(Status.VISITED);
-                System.out.println(grid.displayStatus());
-
-
                 // Relax edge by updating minimum cost if applicable
-                double newDist = dist[nodeId] + edge.getCost();
-                if (newDist < dist[edge.getTo()]) {
-                    prev[edge.getTo()] = nodeId;
-                    dist[edge.getTo()] = newDist;
+                double newDist = distance[nodeId] + edge.getCost();
+                if (newDist < distance[edge.getTo()]) {
+                    previous[edge.getTo()] = nodeId;
+                    distance[edge.getTo()] = newDist;
 
                     System.out.println("Inside");
                     System.out.println("--");
@@ -111,10 +115,10 @@ public class Dijkstra {
 
                     // Insert the cost of going to a node for the first time in the PQ,
                     // or try and update it to a better value by calling decrease
-                    if (!ipq.contains(edge.getTo())) {
-                        ipq.insert(edge.getTo(), newDist);
+                    if (!openSet.contains(edge.getTo())) {
+                        openSet.insert(edge.getTo(), newDist);
                     } else {
-                        ipq.decrease(edge.getTo(), newDist);
+                        openSet.decrease(edge.getTo(), newDist);
                     }
                 }
             }
@@ -126,7 +130,7 @@ public class Dijkstra {
                 grid.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
                 System.out.println(grid.displayStatus());
                 System.out.println("--");
-                return dist[end];
+                return distance[end];
             }
 
         }
@@ -136,7 +140,6 @@ public class Dijkstra {
 
 
     }
-
 
     /**
      * Reconstructs the shortest path (of nodes) from 'start' to 'end' inclusive.
@@ -151,20 +154,24 @@ public class Dijkstra {
         if (start < 0 || start >= NUMBER_OF_NODES) {
             throw new IllegalArgumentException("Invalid node index");
         }
+
         List<Integer> path = new ArrayList<>();
         double dist = dijkstra(start, end);
         if (dist == Double.POSITIVE_INFINITY) {
+            System.out.println("No path!");
             return path;
         }
 
-        for (Integer at = end; at != null; at = prev[at]) {
+        for (Integer at = end; at != null; at = previous[at]) {
             path.add(at);
 
             grid.getListOfNodes().get(at).setStatus(Status.PATH);
             System.out.println(grid.displayStatus());
             System.out.println("--");
         }
+
         Collections.reverse(path);
+
         return path;
     }
 

@@ -71,7 +71,7 @@ public class BFS {
             grid.displayClosedSet(visitedNodes);
             System.out.println(grid.displayQueue(queue));
 
-            // Gets front node from the queue
+            // Gets the front node from the queue
             Node node = queue.dequeue();
 
             // If its exit node, terminate
