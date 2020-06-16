@@ -30,13 +30,13 @@ public class Main {
 /*
         // 1. BFS
         BFS bfs = new BFS(grid);
-        LinkedList<Node> bfsResult = bfs.bfs(graph.get(0), graph.get(143));
+        LinkedList<Node> bfsResult = bfs.start(graph.get(0), graph.get(143));
 */
 
         // 2. DFS (might not work properly)
         grid.clearNodes();
         DFS dfs = new DFS(grid);
-        LinkedList<Node> dfsResult = dfs.dfs(graph.get(0), graph.get(117));
+        LinkedList<Node> dfsResult = dfs.start(graph.get(0), graph.get(117));
 
 
 
