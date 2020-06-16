@@ -68,8 +68,10 @@ public class DFS {
                     //graph.get(next.getIndex()).setStatus(Status.VISITED);
                     relationsList.set(next.getIndex(), node);
 
+
                     System.out.println(grid.displayStatus());
                     System.out.println("--");
+                    break;
                 }
             }
         }
