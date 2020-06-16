@@ -1,17 +1,18 @@
 /**
  * Grid (in Adjacency List) and DFS (recursively) implementation
  * @author Domas
- * @lastUpdate 2020-06-07
+ * @lastUpdate 2020-06-16
  * TODO: DFS
  *
  */
 
 package main;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import main.algorithms.*;
 import main.dataStructures.Node;
-
-import java.util.*;
-
 
 public class Main {
 
@@ -52,6 +53,7 @@ public class Main {
 
     public static void BFS(Grid grid, int start, int end) {
         ClearGrid(grid);
+        grid.getListOfNodes().get(start).setStatus(Status.START);
 
         BFS bfs = new BFS(grid);
         Node startNode = grid.getListOfNodes().get(start);
@@ -61,6 +63,7 @@ public class Main {
 
     public static void DFS(Grid grid, int start, int end) {
         ClearGrid(grid);
+        grid.getListOfNodes().get(start).setStatus(Status.START);
 
         DFS dfs = new DFS(grid);
         Node startNode = grid.getListOfNodes().get(start);
@@ -80,7 +83,6 @@ public class Main {
 
         AStar aStar = new AStar(grid);
         return aStar.start(start, end);
-
     }
 
     public static void ClearGrid(Grid grid) {

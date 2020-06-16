@@ -63,12 +63,13 @@ public class DFS {
         // First node set up
         stack.push(start);
         visitedNodes[start.getIndex()] = true;
-        graph.get(start.getIndex()).setStatus(Status.START);
+        //graph.get(start.getIndex()).setStatus(Status.START);
 
         // O(n) ( worst case: O(n * 4) ) ?
         while (!stack.isEmpty()) {
-            grid.displayClosedSet(visitedNodes);
-            System.out.println(grid.displayStack(stack));
+            DisplayGrid(visitedNodes, stack);
+            // grid.displayClosedSet(visitedNodes);
+            // System.out.println(grid.displayStack(stack));
 
             // Gets the front node from the stack
             Node node = stack.pop();
@@ -90,8 +91,8 @@ public class DFS {
                     visitedNodes[next.getIndex()] = true;
                     previous.set(next.getIndex(), node);
 
-                    System.out.println(grid.displayStatus());
-                    System.out.println("--");
+                    //System.out.println(grid.displayStatus());
+                    //System.out.println("--");
                     break;
                 }
             }
@@ -121,8 +122,9 @@ public class DFS {
             reversedList.add(path.get(i));
             graph.get(path.get(i).getIndex()).setStatus(Status.PATH);
 
-            System.out.println(grid.displayStatus());
-            System.out.println("--");
+            DisplayGridReconstruction();
+            // System.out.println(grid.displayStatus());
+            // System.out.println("--");
         }
 
         // Return the path
@@ -133,6 +135,15 @@ public class DFS {
             return new LinkedList<Node>();
         }
 
+    }
+
+    public void DisplayGrid(boolean[] visitedNodes, Stack<Node> stack) {
+        grid.displayClosedSet(visitedNodes);
+        System.out.println(grid.displayStack(stack));
+    }
+
+    public void  DisplayGridReconstruction() {
+        System.out.println(grid.displayStatus());
     }
 
 }

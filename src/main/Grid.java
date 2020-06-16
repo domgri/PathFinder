@@ -175,7 +175,7 @@ public class Grid {
     public void addStartEnd(int start, int end) {
 
         listOfNodes.get(start).setStatus(Status.START);
-        listOfNodes.get(start).setStatus(Status.FINISH);
+        listOfNodes.get(start).setStatus(Status.END);
 
         for (Node neighbourNode : listOfNodes.get(start).getNeighbours()) {
             for (Edge edge : adjacencyList.get(neighbourNode.getIndex())) {
@@ -415,7 +415,7 @@ public class Grid {
                 return "V";
             case START:
                 return "S";
-            case FINISH:
+            case END:
                 return "E";
             case PATH:
                 return "+";

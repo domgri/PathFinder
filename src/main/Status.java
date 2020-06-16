@@ -7,7 +7,7 @@ public enum Status {
     EMPTY,
     VISITED,
     START,
-    FINISH,
+    END,
     PATH,
     WALL,
     OPEN

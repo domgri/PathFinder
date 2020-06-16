@@ -71,9 +71,9 @@ public class AStar {
         score[start] = heuristic(start, end);
 
         while (!openSet.isEmpty()) {
-            grid.displayClosedSet(closedSet);
-            System.out.println(grid.displayOpenSet(openSet));
-
+            DisplayGrid(closedSet, openSet);
+            // grid.displayClosedSet(closedSet);
+            // System.out.println(grid.displayOpenSet(openSet));
 
             // Gets the top node's id from the heap
             int nodeId = openSet.peekMinKeyIndex();
@@ -81,9 +81,11 @@ public class AStar {
 
             // If its the end node, terminate
             if (nodeId == end) {
-                grid.getListOfNodes().get(nodeId).setStatus(Status.FINISH);
-                System.out.println(grid.displayStatus());
-                System.out.println("--");
+                grid.getListOfNodes().get(nodeId).setStatus(Status.END);
+
+                DisplayGridStatus();
+                // System.out.println(grid.displayStatus());
+                // System.out.println("--");
                 return distance[end];
             }
 
@@ -244,12 +246,23 @@ public class AStar {
             path.add(at);
 
             grid.getListOfNodes().get(at).setStatus(Status.PATH);
-            System.out.println(grid.displayStatus());
-            System.out.println("--");
+
+            DisplayGridStatus();
+            // System.out.println(grid.displayStatus());
+            // System.out.println("--");
         }
 
         Collections.reverse(path);
 
         return path;
+    }
+
+    public void DisplayGrid(boolean[] closedSet, MinIndexedDHeap<Double> openSet) {
+        grid.displayClosedSet(closedSet);
+        System.out.println(grid.displayOpenSet(openSet));
+    }
+
+    public void  DisplayGridStatus() {
+        System.out.println(grid.displayStatus());
     }
 }

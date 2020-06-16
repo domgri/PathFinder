@@ -7,6 +7,7 @@ import main.dataStructures.Node;
 import main.dataStructures.Queue;
 import main.Status;
 import main.Grid;
+import main.dataStructures.Stack;
 
 public class BFS {
 
@@ -42,7 +43,7 @@ public class BFS {
      * @param start Node to start with
      * @return Path from finish to start node
      */
-    public LinkedList<Node> solveBfs(Node start, Node end, LinkedList<Node> graph) {
+    public LinkedList<Node> solveBfs(Node start, Node end, LinkedList<Node> listOfNodes) {
 
         // Main implementation difference from DFS - Queue
         Queue<Node> queue = new Queue<Node>();
@@ -63,13 +64,15 @@ public class BFS {
         // First node set up
         queue.enqueue(start);
         visitedNodes[start.getIndex()] = true;
-        graph.get(start.getIndex()).setStatus(Status.START);
+        //graph.get(start.getIndex()).setStatus(Status.START);
+
 
 
         // O(n) ( worst case: O(n * 4) ) ?
         while (!queue.isEmpty()) {
-            grid.displayClosedSet(visitedNodes);
-            System.out.println(grid.displayQueue(queue));
+            DisplayGrid(visitedNodes, queue);
+            // grid.displayClosedSet(visitedNodes);
+            // System.out.println(grid.displayQueue(queue));
 
             // Gets the front node from the queue
             Node node = queue.dequeue();
@@ -79,7 +82,7 @@ public class BFS {
                 return previous;
             }
             // Otherwise, get all node's neighbours
-            List<Node> neighbours = graph.get(node.getIndex()).getNeighbours();
+            List<Node> neighbours = listOfNodes.get(node.getIndex()).getNeighbours();
 
             // Traverse through neighbours
             for (Node next : neighbours) {
@@ -119,8 +122,10 @@ public class BFS {
             reversedList.add(path.get(i));
             listOfNodes.get(path.get(i).getIndex()).setStatus(Status.PATH);
 
-            System.out.println(grid.displayStatus());
-            System.out.println("--");
+
+            DisplayGridReconstruction();
+            //System.out.println(grid.displayStatus());
+            //System.out.println("--");
         }
 
         // Return the path
@@ -131,5 +136,14 @@ public class BFS {
             return new LinkedList<Node>();
         }
 
+    }
+
+    public void DisplayGrid(boolean[] visitedNodes, Queue<Node> queue) {
+        grid.displayClosedSet(visitedNodes);
+        System.out.println(grid.displayQueue(queue));
+    }
+
+    public void  DisplayGridReconstruction() {
+        System.out.println(grid.displayStatus());
     }
 }
